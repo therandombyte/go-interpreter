@@ -28,7 +28,7 @@ const (
 
 	// Delimiters
 	COMMA     = ","
-	SEMICOLON = ":"
+	SEMICOLON = ";"
 	LPAREN    = "("
 	RPAREN    = ")"
 	LBRACE    = "{"
@@ -49,6 +49,7 @@ type TokenType string
 
 type Token struct {
 	Type TokenType
+	Literal string
 }
 
 
