@@ -1,7 +1,10 @@
 package token
 
+// ------------------------------------------------------------
 // Background:
-//   Source Code -> Tokens -> Abstract Syntax Tree
+//   -----------        --------      ----------------------
+//  | Source Code | -> | Tokens | -> | Abstract Syntax Tree |
+//   ------------       --------      ----------------------
 //   The first transformation will be done by a tokenizer (lexer)
 //   And, Token will be a data structure/ struct that will be input to tokenizer
 
@@ -11,14 +14,15 @@ package token
 // 		identifiers  : myVar
 // 		delimiters   : (,),{,}
 // 		operators    : +,-,*
+// ------------------------------------------------------------
 
-
+// fixed values for TokenType
 const (
 	// reserved words/keywords
 	ILLEGAL = "ILLEGAL"
 	EOF     = "EOF"
 
-	// identifiers (we dont care its int or variables) + literals
+	// identifiers (we dont care if its int or variables) + literals
 	IDENT   = "IDENT" // add, foo, x, y
 	INT     = "INT"   // 123
 
@@ -42,11 +46,10 @@ const (
 // Named type:
 // It's for type safety (explicit conversion), readability, extensibility (by attaching methods/values)
 // Also, switch statements can be applied on the type values
-// In this case, we can have specific values for out TokenType
+// In this case, we can have specific values for our TokenType
 type TokenType string
 
-
-
+// every token has a "valid" type and holds the current character
 type Token struct {
 	Type TokenType
 	Literal string
