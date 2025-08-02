@@ -23,7 +23,8 @@ const (
 	EOF     = "EOF"
 
 	// identifiers (we dont care if its int or variables) + literals
-	IDENT = "IDENT" // add, foo, x, y. TokenType for all user-defined identifiers
+	// TokenType for all user-defined identifiers
+	IDENT = "IDENT" // add, foo, x, y.
 	INT   = "INT"   // 123
 
 	// operators
@@ -38,32 +39,35 @@ const (
 	LBRACE    = "{"
 	RBRACE    = "}"
 
-	// keywords
+	// keywords (need to be looked up from identifiers)
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
 )
 
-// Named type:
-// It's for type safety (explicit conversion), readability, extensibility (by attaching methods/values)
-// Also, switch statements can be applied on the type values
-// In this case, we can have specific values for our TokenType
+// TokenType holds all the allowed "type" values for a token.
 type TokenType string
 
-// every token has a "valid" type and holds the current character
+// Best Practice:
+// Named types are for type safety (explicit conversion), readability, extensibility (by attaching methods/values)
+// Also, switch statements can be applied on the type values
+// In this case, we can have enumerated values for our TokenType
+
+// Token holds the current literal/character and its type
 type Token struct {
 	Type    TokenType
 	Literal string
 }
 
-// helper function to deduce TokenType from literal
-// keywords need to be separated from input literals
-// keep all the keywords in a map, later iterate over it
-
+// Map of all language keywords and its token type,
+// to be used in lookup
 var keywords = map[string]TokenType{
 	"fn":  FUNCTION,
 	"let": LET,
 }
 
+// LookupIdentifier will check if the input identifier is a language keyword,
+// and return its token type.
+// Otherwise return IDENT (default for all identifiers)
 func LookupIdentifier(ident string) TokenType {
 	if tok, ok := keywords[ident]; ok {
 		return tok

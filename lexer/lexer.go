@@ -9,8 +9,8 @@ import "github.com/therandombyte/go-interpreter/token"
 // we just give it a string to avoid complexity
 // ------------------------------------------------------------
 
-// Lexer will take an input string and read character by character
-// in this case, the character will be a token, that has a valid type
+// Lexer takes an input string and reads character by character.
+// This character will be converted into a Token
 type Lexer struct {
 	input        string
 	position     int  // current position pointing to ch
@@ -18,30 +18,16 @@ type Lexer struct {
 	ch           byte // only supports ascii, so byte will suffice
 }
 
-// for any struct, if its fields are not straight-forward to initialize,
-// then invoke an init function in the constructor
+// Creates a Lexer with provided input string and initializes position values.
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
 	l.readChar()
 	return l
 }
 
-// readChar() will get the next character in input
-// if we reach the end of input, then EOF
-// otherwise, set ch to the next character,
-// point "position" also to the next character,
-// and then increment "readPosition"
-// the character returned by readChar() will be used by NextToken() to create a Token
-func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
-		l.ch = 0
-	} else {
-		l.ch = l.input[l.readPosition] // this works when the next char is one byte
-	}
-	l.position = l.readPosition
-	l.readPosition += 1
-}
-
+// NextToken will get the current char/literal from Lexer
+// and creates a Token. If the literal is a keyword, then look it up.
+// otherwise, mark it as illegal
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
@@ -67,8 +53,11 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 	default:
 		if isLetter(l.ch) {
-			// setting literal, but type needs to be deduced
+			// If literal is unidentified, check if its a keyword,
+			// and lookup its type.
+			// otherwise mark it as illegal.
 			tok.Literal = l.readIdentifier()
+			tok.Type = token.LookupIdentifier(tok.Literal)
 			return tok
 		} else {
 			tok = newToken(token.ILLEGAL, l.ch)
@@ -78,6 +67,8 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
+// readIdentifier() will read the next identifier/char from lexer's input.
+// Calls readChar() repeatedly
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -86,10 +77,25 @@ func (l *Lexer) readIdentifier() string {
 	return l.input[position:l.position]
 }
 
+// newToken() creats a new token for each input literal
 func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
+// isLetter() defines what is allowed as a letter in our language.
+// Currently its (a-z,A-z,_)
 func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
+}
+
+// readChar() will get the next character from input.
+// If it reaches end of input, then output 0 (EOF).
+func (l *Lexer) readChar() {
+	if l.readPosition >= len(l.input) {
+		l.ch = 0
+	} else {
+		l.ch = l.input[l.readPosition] // this works when the next char is one byte
+	}
+	l.position = l.readPosition
+	l.readPosition += 1
 }
