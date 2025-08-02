@@ -12,13 +12,13 @@ import "github.com/therandombyte/go-interpreter/token"
 // Lexer will take an input string and read character by character
 // in this case, the character will be a token, that has a valid type
 type Lexer struct {
-	input string
-	position int       // current position pointing to ch
-	readPosition int   // the next character position
-	ch byte            // only supports ascii, so byte will suffice
+	input        string
+	position     int  // current position pointing to ch
+	readPosition int  // the next character position
+	ch           byte // only supports ascii, so byte will suffice
 }
 
-// for any struct, if its fields are not straight-forward to initialize, 
+// for any struct, if its fields are not straight-forward to initialize,
 // then invoke an init function in the constructor
 func New(input string) *Lexer {
 	l := &Lexer{input: input}
@@ -28,7 +28,7 @@ func New(input string) *Lexer {
 
 // readChar() will get the next character in input
 // if we reach the end of input, then EOF
-// otherwise, set ch to the next character, 
+// otherwise, set ch to the next character,
 // point "position" also to the next character,
 // and then increment "readPosition"
 // the character returned by readChar() will be used by NextToken() to create a Token
@@ -36,7 +36,7 @@ func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
 		l.ch = 0
 	} else {
-		l.ch = l.input[l.readPosition]  // this works when the next char is one byte
+		l.ch = l.input[l.readPosition] // this works when the next char is one byte
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
@@ -67,6 +67,7 @@ func (l *Lexer) NextToken() token.Token {
 		tok.Type = token.EOF
 	default:
 		if isLetter(l.ch) {
+			// setting literal, but type needs to be deduced
 			tok.Literal = l.readIdentifier()
 			return tok
 		} else {

@@ -23,12 +23,12 @@ const (
 	EOF     = "EOF"
 
 	// identifiers (we dont care if its int or variables) + literals
-	IDENT   = "IDENT" // add, foo, x, y
-	INT     = "INT"   // 123
+	IDENT = "IDENT" // add, foo, x, y. TokenType for all user-defined identifiers
+	INT   = "INT"   // 123
 
 	// operators
-	ASSIGN  = "="
-	PLUS    = "+"
+	ASSIGN = "="
+	PLUS   = "+"
 
 	// Delimiters
 	COMMA     = ","
@@ -51,8 +51,22 @@ type TokenType string
 
 // every token has a "valid" type and holds the current character
 type Token struct {
-	Type TokenType
+	Type    TokenType
 	Literal string
 }
 
+// helper function to deduce TokenType from literal
+// keywords need to be separated from input literals
+// keep all the keywords in a map, later iterate over it
 
+var keywords = map[string]TokenType{
+	"fn":  FUNCTION,
+	"let": LET,
+}
+
+func LookupIdentifier(ident string) TokenType {
+	if tok, ok := keywords[ident]; ok {
+		return tok
+	}
+	return IDENT
+}
