@@ -28,8 +28,14 @@ const (
 	INT   = "INT"   // 123
 
 	// operators
-	ASSIGN = "="
-	PLUS   = "+"
+	ASSIGN   = "="
+	PLUS     = "+"
+	MINUS    = "-"
+	BANG     = "!"
+	SLASH    = "/"
+	ASTERISK = "*"
+	LT       = "<"
+	GT       = ">"
 
 	// Delimiters
 	COMMA     = ","
@@ -52,6 +58,7 @@ type TokenType string
 // Also, switch statements can be applied on the type values
 // In this case, we can have enumerated values for our TokenType
 
+// Tokens are output of the Lexer.
 // Token holds the current literal/character and its type
 type Token struct {
 	Type    TokenType
