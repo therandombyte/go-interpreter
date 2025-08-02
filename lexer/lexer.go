@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/therandombyte/go-interpreter/token"
+import (
+	"fmt"
+
+	"github.com/therandombyte/go-interpreter/token"
+)
 
 // ------------------------------------------------------------
 // Background:
@@ -30,7 +34,7 @@ func New(input string) *Lexer {
 // otherwise, mark it as illegal
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
-
+	l.skipWhitespace()
 	switch l.ch {
 	case '=':
 		tok = newToken(token.ASSIGN, l.ch)
@@ -48,8 +52,8 @@ func (l *Lexer) NextToken() token.Token {
 		tok = newToken(token.LBRACE, l.ch)
 	case '}':
 		tok = newToken(token.RBRACE, l.ch)
-	case '0':
-		tok.Literal = " "
+	case 0:
+		tok.Literal = ""
 		tok.Type = token.EOF
 	default:
 		if isLetter(l.ch) {
@@ -58,8 +62,15 @@ func (l *Lexer) NextToken() token.Token {
 			// otherwise mark it as illegal.
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookupIdentifier(tok.Literal)
+			fmt.Println("Case Letter ", tok.Literal)
+			return tok
+		} else if isDigit(l.ch) {
+			tok.Type = token.INT
+			tok.Literal = l.readNumber()
+			fmt.Println("Case Digit ", tok.Literal)
 			return tok
 		} else {
+			fmt.Println("Case Illegal ", l.ch)
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
@@ -98,4 +109,22 @@ func (l *Lexer) readChar() {
 	}
 	l.position = l.readPosition
 	l.readPosition += 1
+}
+
+func (l *Lexer) skipWhitespace() {
+	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
+		l.readChar()
+	}
+}
+
+func isDigit(ch byte) bool {
+	return '0' <= ch && ch <= '9'
+}
+
+func (l *Lexer) readNumber() string {
+	position := l.position
+	for isDigit(l.ch) {
+		l.readChar()
+	}
+	return l.input[position:l.position]
 }
