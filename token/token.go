@@ -53,6 +53,8 @@ const (
 	IF       = "IF"
 	ELSE     = "ELSE"
 	RETURN   = "RETURN"
+	EQ       = "=="
+	NOT_EQ   = "!="
 )
 
 // TokenType holds all the allowed "type" values for a token.
