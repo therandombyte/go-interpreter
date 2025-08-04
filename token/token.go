@@ -48,6 +48,11 @@ const (
 	// keywords (need to be looked up from identifiers)
 	FUNCTION = "FUNCTION"
 	LET      = "LET"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	RETURN   = "RETURN"
 )
 
 // TokenType holds all the allowed "type" values for a token.
@@ -68,8 +73,13 @@ type Token struct {
 // Map of all language keywords and its token type,
 // to be used in lookup
 var keywords = map[string]TokenType{
-	"fn":  FUNCTION,
-	"let": LET,
+	"fn":     FUNCTION,
+	"let":    LET,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
 }
 
 // LookupIdentifier will check if the input identifier is a language keyword,
