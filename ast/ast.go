@@ -1,5 +1,7 @@
 package ast
 
+import "github.com/therandombyte/go-interpreter/token"
+
 // ------------------------------------------------------------
 // Background:
 // After the lexer produces tokens, the Parser will take those
@@ -29,6 +31,24 @@ type Expression interface {
 	Node
 	expressionNode()
 }
+
+// LetStatement is a representation of let <identifier> = <expression>
+type LetStatement struct {
+	Token token.Token // the token.LET token
+	Name  *Identifier
+	Value Expression
+}
+
+func (ls *LetStatement) statementNode()       {}
+func (ls *LetStatement) TokenLiteral() string { return ls.Token.Literal }
+
+type Identifier struct {
+	Token token.Token // the token.IDENT token
+	Value string
+}
+
+func (i *Identifier) expressionNode()      {}
+func (i *Identifier) TokenLiteral() string { return i.Token.Literal }
 
 // Program will be the root Node of AST.
 // Every program is a series of statements,
