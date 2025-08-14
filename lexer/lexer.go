@@ -8,7 +8,7 @@ import (
 // Background:
 // Source Code -> Lexer -> Token
 // Instead of reading the source code from a file or shell,
-// we just give it a string to avoid complexity
+// we just give it as string to avoid complexity
 // ------------------------------------------------------------
 
 // Lexer takes an input string and reads character by character.
@@ -97,8 +97,9 @@ func (l *Lexer) NextToken() token.Token {
 	return tok
 }
 
-// readIdentifier() will read the next identifier/char from lexer's input.
-// Calls readChar() repeatedly
+// readIdentifier() will keep reading the next identifier/char from lexer's input,
+// untill it encounters a non-letter character.
+// Using readChar() repeatedly
 func (l *Lexer) readIdentifier() string {
 	position := l.position
 	for isLetter(l.ch) {
@@ -112,7 +113,7 @@ func newToken(tokenType token.TokenType, ch byte) token.Token {
 	return token.Token{Type: tokenType, Literal: string(ch)}
 }
 
-// readChar() will get the next character from input.
+// readChar() will get the next character from lexer input.
 // If it reaches end of input, then output 0 (EOF).
 func (l *Lexer) readChar() {
 	if l.readPosition >= len(l.input) {
